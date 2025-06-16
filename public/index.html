@@ -83,7 +83,7 @@
         function genQR() {
             $.ajax({
                 method: 'post',
-                url: 'http://localhost:3000/generateQR',
+                url: 'https://prompt-pay-qr.onrender.com/generateQR',
                 data: {
                     amount: parseFloat($("#amount").val()),
                     reference: $("#reference").val()
