@@ -80,7 +80,25 @@
     <!-- JQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script>
+        function showLoadingSwal() {
+            Swal.fire({
+                title: 'กำลังสร้างคิวอาร์โค้ด...', // "Generating QR Code..." in Thai
+                html: 'กรุณารอสักครู่', // "Please wait a moment" in Thai
+                allowOutsideClick: false, // Prevent closing by clicking outside
+                allowEscapeKey: false,   // Prevent closing by pressing Escape key
+                showConfirmButton: false, // Hide the "OK" button
+                didOpen: () => {
+                    Swal.showLoading(); // Show the loading spinner
+                }
+            });
+        }
+
+      function closeLoadingSwal() {
+          Swal.close();
+      }
+        
         function genQR() {
+            showLoadingSwal()
             $.ajax({
                 method: 'post',
                 url: 'https://prompt-pay-qr.onrender.com/generateQR',
@@ -89,6 +107,7 @@
                     reference: $("#reference").val()
                 },
                 success: function(response) {
+                  closeLoadingSwal()
                   console.log('good', response)
                   const qrImageHtml = `
                     <div style="display: flex; justify-content: center; align-items: center;">
@@ -106,12 +125,13 @@
                   });
 
                 }, error: function(err) {
+                  closeLoadingSwal()
                   console.log('bad', err)
                   Swal.fire("Error", "Failed to generate QR code.", "error");
                 }
             })
         }
-</script>
+  </script>
   </body>
   
 </html>
