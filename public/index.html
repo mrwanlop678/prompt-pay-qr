@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Awesome Icon -->
+    <script src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/js/all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/fontawesome.min.css" rel="stylesheet" />
+
+    <!-- Swal -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Font Css -->
+    <link rel="stylesheet" href="font.css" />
+  </head>
+  <body>
+    <div class="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
+      <div class="flex flex-col gap-3 pb-5 bg-gray-900 text-gray-300 p-4">
+        <h1 class="prompt-bold text-2xl font-bold">www.pp-qr.com</h1>
+      </div>
+      <!-- Container -->
+      <div class="container mx-auto px-4 py-10">
+        <div class="text-center mb-8">
+          <h1 class="prompt-bold text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-5">สร้าง QR Code PromptPay</h1>
+          <h2 class="text-2xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">
+            <span class="prompt-bold text-blue-600 dark:text-blue-400">ง่ายๆ ในไม่กี่วินาที</span>
+          </h2>
+          <p class="prompt-regular text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            สร้าง QR Code สำหรับรับชำระเงินผ่าน PromptPay ได้ทันที ไม่ต้องติดตั้งแอพ ไม่ต้องลงทะเบียน สร้างฟรี ไม่มีค่าใช้จ่าย
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1">
+          <div class="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
+            <div class="space-y-6">
+                <div class="prompt-bold text-2xl font-bold text-gray-900 dark:text-white mb-6">
+                    <i class="fa-solid fa-qrcode mr-3"></i>สร้าง QR Code
+                </div>
+            
+              <div class="flex flex-col space-y-4">
+                <labe for="amount" class="prompt-medium text-sm font-medium text-gray-700 dark:text-gray-300">จำนวนเงิน (บาท)</labe>
+                <input
+                  type="text"
+                  id="amount"
+                  placeholder="0.00"
+                  class="prompt-regular w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  value=""
+                />
+              </div>
+              <div class="flex flex-col space-y-4">
+                <label for="reference" class="prompt-medium text-sm font-medium text-gray-700 dark:text-gray-300">หมายเลขพร้อมเพย์</label>
+                <input
+                  type="text"
+                  id="reference"
+                  placeholder="เช่น 0887756321"
+                  class="prompt-regular w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  value
+                />
+              </div>
+              <button onclick="genQR()" class="prompt-medium w-full cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition duration-200">สร้าง QR Code</button>
+              <div class="text-sm text-red-500 dark:text-red-400">* ไม่เกินครั้งละ 10,000 บาท</div>
+              </div>
+            </div>
+            <img id="imgqr" src="" style="width: 500px; object-fit: contain;">
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- JQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script>
+        function genQR() {
+            $.ajax({
+                method: 'post',
+                url: 'http://localhost:3000/generateQR',
+                data: {
+                    amount: parseFloat($("#amount").val()),
+                    reference: $("#reference").val()
+                },
+                success: function(response) {
+                  console.log('good', response)
+                  const qrImageHtml = `
+                    <div style="display: flex; justify-content: center; align-items: center;">
+                      <img src="${response.Result}" style="width: 200px; height: 200px; object-fit: contain;">
+                    </div>
+                    <span class="prompt-regular">หมายเลขพร้อมเพย์ : ${reference.value}</span><br>
+                    <span class="prompt-regular">จำนวนเงิน : ${amount.value} บาท</span>
+                  `;
+
+                  Swal.fire({
+                    html: qrImageHtml,
+                    icon: "success",
+                    confirmButtonText: "OK",
+                    confirmButtonColor: "#165ffa"
+                  });
+
+                }, error: function(err) {
+                  console.log('bad', err)
+                  Swal.fire("Error", "Failed to generate QR code.", "error");
+                }
+            })
+        }
+</script>
+  </body>
+  
+</html>
