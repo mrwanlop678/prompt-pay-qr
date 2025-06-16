@@ -5,6 +5,7 @@ const generatePayload = require('promptpay-qr')
 const bodyParser = require('body-parser')
 const _ = require('lodash')
 const cors = require('cors')
+const path = require('path')
 
 app.use(cors())
 app.use(bodyParser.json())
